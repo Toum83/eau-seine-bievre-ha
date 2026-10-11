@@ -36,6 +36,9 @@ class Provider(StrEnum):
     # Vivaigo — Salon-de-Provence, Berre-l'Étang, Lambesc, Eyguières,
     # Pélissanne, Velaux, Rognac, Sénas, etc.
     VIVAIGO = "vivaigo"
+    # Eau Seine & Bièvre — régie of the Grand-Orly Seine Bièvre territory
+    # (portal ael.eauxseinebievreorge.fr, same SOMEI stack).
+    GOSB = "gosb"
 
 
 @dataclass(frozen=True, slots=True)
@@ -51,6 +54,9 @@ class PortalEndpoints:
     host: str
     client_id: str
     access_key: str
+    # Empty ``client_id``/``access_key``: read them at runtime from these
+    # public JS bundle paths (see :mod:`._app_bundle`).
+    bundle_paths: tuple[str, ...] = ()
 
     @property
     def api_base(self) -> str:
@@ -75,6 +81,13 @@ PROVIDERS: dict[Provider, PortalEndpoints] = {
         host="espaceclients.vivaigo.fr",
         client_id="SOMEI-VIE-PRD",
         access_key="QT_gha8D-2024-VIE-PRD!",
+    ),
+    Provider.GOSB: PortalEndpoints(
+        url="https://ael.eauxseinebievreorge.fr",
+        host="ael.eauxseinebievreorge.fr",
+        client_id="",
+        access_key="",
+        bundle_paths=("/app/app.js", "/app/main.js"),
     ),
 }
 
@@ -133,6 +146,7 @@ PROVIDER_MANUFACTURER: dict[Provider, str] = {
     Provider.SEM: "Société des Eaux de Marseille",
     Provider.SEMM: "Eau de Marseille Métropole",
     Provider.VIVAIGO: "Vivaigo",
+    Provider.GOSB: "Eau Seine & Bièvre",
 }
 
 DEFAULT_PROVIDER = Provider.SEM

@@ -25,6 +25,7 @@ import aiohttp
 from yarl import URL
 
 from . import _http
+from ._app_bundle import parse_app_credentials
 from .const import (
     PROVIDERS,
     PortalEndpoints,
@@ -82,6 +83,9 @@ class PortalAuth:
         # token-caching pass across coordinator polls (#12).
         self._app_token: str | None = None
         self._ael_token: str | None = None
+        # App credentials read from the portal bundle (providers without
+        # pinned ones), cached for the lifetime of this client.
+        self._discovered_app_credentials: tuple[str, str] | None = None
 
     # ------------------------------------------------------------------
     # State predicates
@@ -177,16 +181,41 @@ class PortalAuth:
                 ) from err
             raise EauxDeMarseilleApiError(f"Failed to reach portal: {err}") from err
 
+    async def _app_credentials(self) -> tuple[str, str]:
+        """Static app ``(ClientId, AccessKey)``: pinned, or read from the portal bundle."""
+        if self._endpoints.client_id and self._endpoints.access_key:
+            return self._endpoints.client_id, self._endpoints.access_key
+        if self._discovered_app_credentials is not None:
+            return self._discovered_app_credentials
+        for path in self._endpoints.bundle_paths:
+            try:
+                async with self._session.get(
+                    f"{self._endpoints.url}{path}",
+                    headers={**self._base_headers, "Accept": "*/*"},
+                    timeout=self._timeout,
+                ) as response:
+                    if response.status >= 400:
+                        continue
+                    found = parse_app_credentials(await response.text())
+            except (aiohttp.ClientError, TimeoutError) as err:
+                raise EauxDeMarseilleApiError(f"Failed to read portal bundle {path}: {err}") from err
+            if found:
+                self._discovered_app_credentials = found
+                return found
+        raise EauxDeMarseilleApiError(
+            "Application credentials not found in the portal's JavaScript bundle"
+        )
+
     async def _step_generate_token(self) -> str:
         cid = conversation_id()
-        access_key = self._endpoints.access_key
+        client_id, access_key = await self._app_credentials()
         data = await self._auth_call(
             "POST",
             "/Acces/generateToken",
             extra_headers={"ConversationId": cid, "token": access_key},
             json_payload={
                 "ConversationId": cid,
-                "ClientId": self._endpoints.client_id,
+                "ClientId": client_id,
                 "AccessKey": access_key,
             },
             require_field="token",

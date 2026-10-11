@@ -20,6 +20,7 @@ _PROVIDER_LABELS = {
     Provider.SEM: "Société des Eaux de Marseille (Ventabren, Bandol, Vitrolles, Trets…)",
     Provider.SEMM: "Eau de Marseille Métropole (Marseille, La Ciotat, Cassis, Marignane…)",
     Provider.VIVAIGO: "Vivaigo (Salon, Berre, Lambesc, Eyguières…)",
+    Provider.GOSB: "Eau Seine & Bièvre (régie Grand-Orly Seine Bièvre)",
 }
 
 STEP_USER_DATA_SCHEMA = vol.Schema(

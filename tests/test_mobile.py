@@ -176,8 +176,9 @@ def test_mobile_endpoints_cover_all_providers() -> None:
         Provider.SEMM: "ael-semm-mobility.somei.fr",
         Provider.VIVAIGO: "ael-vie-mobility.somei.fr",
     }
-    # Every provider is covered (a new one must ship its own capture).
-    assert set(MOBILE_ENDPOINTS) == set(Provider) == set(expected_hosts)
+    # Every provider is covered (a new one must ship its own capture), except
+    # Eau Seine & Bièvre whose phone-app backend isn't known yet (web portal only).
+    assert set(MOBILE_ENDPOINTS) == set(Provider) - {Provider.GOSB} == set(expected_hosts)
     # One shared AuthKey (SOMEI-platform constant), not per-app.
     assert len({ep.auth_key for ep in MOBILE_ENDPOINTS.values()}) == 1
     for provider, host in expected_hosts.items():
