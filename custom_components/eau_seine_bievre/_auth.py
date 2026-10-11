@@ -43,6 +43,11 @@ def conversation_id() -> str:
     return f"JS-WEB-Netscape-{uuid.uuid4()}"
 
 
+def _without_body_type(headers: dict[str, str]) -> dict[str, str]:
+    """Headers for a GET: no ``Content-Type`` (nothing is sent), like the browser."""
+    return {k: v for k, v in headers.items() if k.lower() != "content-type"}
+
+
 def _is_dns_failure(err: BaseException) -> bool:
     """Detect DNS resolution failures from the connector.
 
@@ -142,7 +147,7 @@ class PortalAuth:
             "GET",
             f"{self._endpoints.api_base}{path}",
             timeout=self._timeout,
-            headers=self._headers(),
+            headers=_without_body_type(self._headers()),
             allowed_host=self._endpoints.host,
         )
 
@@ -212,7 +217,7 @@ class PortalAuth:
         data = await self._auth_call(
             "POST",
             "/Acces/generateToken",
-            extra_headers={"ConversationId": cid, "token": access_key},
+            extra_headers={"ConversationId": cid, "Token": access_key},
             json_payload={
                 "ConversationId": cid,
                 "ClientId": client_id,
@@ -296,7 +301,9 @@ class PortalAuth:
         headers = {**self._base_headers, "ConversationId": conversation_id()}
         token = self._ael_token or self._app_token
         if token:
-            headers["token"] = token
+            # Same spelling as the portal's JS (``Token``): the Eau Seine & Bièvre
+            # front end (F5 BIG-IP) may match header names case-sensitively.
+            headers["Token"] = token
         if extra:
             headers.update(extra)
         return headers
@@ -318,13 +325,19 @@ class PortalAuth:
         error_prefix: str = "Request failed",
     ) -> dict[str, Any]:
         """API call mapped to :class:`EauxDeMarseilleAuthError` on failure."""
+        _LOGGER.debug(
+            "%s %s with headers %s",
+            method,
+            path,
+            sorted(self._headers(extra_headers)),
+        )
         try:
             data = await _http.request_with_retry(
                 self._session,
                 method,
                 f"{self._endpoints.api_base}{path}",
                 timeout=self._timeout,
-                headers=self._headers(extra_headers),
+                headers=self._headers(extra_headers) if method != "GET" else _without_body_type(self._headers(extra_headers)),
                 allowed_host=self._endpoints.host,
                 json=json_payload,
             )
