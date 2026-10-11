@@ -33,7 +33,7 @@ from .const import (
     headers_for,
 )
 from .exceptions import EauxDeMarseilleApiError, EauxDeMarseilleAuthError
-from .models import encode_context_cookie
+from .models import encode_context_cookie, encode_user_context_cookie
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -259,6 +259,13 @@ class PortalAuth:
         self._ael_token = ael_token
         self._app_token = None
         self._set_cookie("aelToken", ael_token)
+        # Same as the portal's JS (``setUser``): user context cookie before
+        # the first authenticated call; step 5 replaces it with the full one.
+        self._set_cookie("AEL_CONTEXT", encode_user_context_cookie(user_info, ael_token))
+        _LOGGER.debug(
+            "Cookies before default contract: %s",
+            sorted({c.key for c in self._session.cookie_jar}),
+        )
         return ael_token, user_info
 
     async def _step_default_contract(self) -> dict[str, Any]:

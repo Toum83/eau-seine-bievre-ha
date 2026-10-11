@@ -149,6 +149,17 @@ def _litres_to_m3(litres: float | int | None) -> float | None:
     return round(float(litres) / 1000, 3)
 
 
+def encode_user_context_cookie(user_info: dict[str, Any], ael_token: str) -> str:
+    """``AEL_CONTEXT`` as the portal's JS writes it right after login (user only).
+
+    The web app stores ``{"user": ...}`` before its first authenticated call
+    (``getContratParDefaut``); the Eau Seine & Bièvre back end rejects that
+    call with 401 "Le token de session a expiré" when the cookie is missing.
+    """
+    full = json.loads(urllib.parse.unquote_plus(encode_context_cookie({}, user_info, ael_token)))
+    return urllib.parse.quote_plus(json.dumps({"user": full["user"]}, ensure_ascii=False))
+
+
 def encode_context_cookie(
     contract: dict[str, Any],
     user_info: dict[str, Any],
