@@ -20,5 +20,5 @@
   "requirements": [
     "tenacity>=8.0"
   ],
-  "version": "1.19.0+gosb.4"
+  "version": "1.19.0+gosb.5"
 }

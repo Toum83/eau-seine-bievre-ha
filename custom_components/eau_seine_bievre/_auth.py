@@ -227,6 +227,11 @@ class PortalAuth:
             error_prefix="Token generation failed",
         )
         token: str = data["token"]
+        # Like the portal's JS (``tokenService.setToken``): the app token also
+        # goes into the ``aelToken`` cookie; the Eau Seine & Bièvre back end
+        # answers "Session inconnue" when the ``Token`` header has no matching
+        # cookie.
+        self._set_cookie("aelToken", token)
         return token
 
     async def _step_login(
