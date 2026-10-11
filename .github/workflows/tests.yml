@@ -42,11 +42,11 @@ jobs:
       - name: Architecture (import-linter)
         run: lint-imports
       - name: Dependency hygiene (deptry)
-        run: python -m deptry custom_components/eaux_marseille
+        run: python -m deptry custom_components/eau_seine_bievre
       - name: Dead code (vulture)
         run: python -m vulture
       - name: Duplication (pylint)
-        run: python -m pylint custom_components/eaux_marseille --disable=all --enable=duplicate-code --score=n
+        run: python -m pylint custom_components/eau_seine_bievre --disable=all --enable=duplicate-code --score=n
 
   # Typecheck and Pytest run against two Home Assistant channels: the
   # latest stable release and the latest release overall (a beta during
@@ -71,7 +71,7 @@ jobs:
           pip install mypy -r requirements_test.txt "pytest-homeassistant-custom-component==$PHACC"
           python -c "import homeassistant.const as c; print('Home Assistant', c.__version__)"
       - name: Mypy
-        run: python -m mypy custom_components/eaux_marseille/
+        run: python -m mypy custom_components/eau_seine_bievre/
 
   test:
     name: Pytest${{ matrix.ha == 'latest' && ' - HA latest' || '' }}
@@ -104,7 +104,7 @@ jobs:
       - name: Run tests with coverage
         run: |
           python -m pytest tests/ -v --tb=short \
-            --cov=custom_components.eaux_marseille \
+            --cov=custom_components.eau_seine_bievre \
             --cov-report=term-missing \
             --cov-report=xml \
             --cov-fail-under=95

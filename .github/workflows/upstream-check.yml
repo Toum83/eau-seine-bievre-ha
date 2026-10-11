@@ -11,7 +11,7 @@ name: Upstream check
 #
 # The access keys are NOT secrets — they're shipped in the portal's
 # public JavaScript bundle and duplicated here from
-# custom_components/eaux_marseille/const.py so the workflow stays
+# custom_components/eau_seine_bievre/const.py so the workflow stays
 # self-contained (no checkout, no Python install needed).
 #
 # Failure: GitHub sends an email to the repo admin on a failed
@@ -28,7 +28,7 @@ on:
   push:
     branches: [main]
     paths:
-      - custom_components/eaux_marseille/const.py
+      - custom_components/eau_seine_bievre/const.py
 
 permissions:
   contents: read

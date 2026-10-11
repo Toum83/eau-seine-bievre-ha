@@ -11,12 +11,12 @@ import pytest
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
 
-from custom_components.eaux_marseille.api import (
+from custom_components.eau_seine_bievre.api import (
     EauxDeMarseilleApiError,
     EauxDeMarseilleAuthError,
 )
-from custom_components.eaux_marseille.const import DOMAIN
-from custom_components.eaux_marseille.coordinator import EauxDeMarseilleCoordinator
+from custom_components.eau_seine_bievre.const import DOMAIN
+from custom_components.eau_seine_bievre.coordinator import EauxDeMarseilleCoordinator
 
 from .conftest import MOCK_CONSUMPTION
 

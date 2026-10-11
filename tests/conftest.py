@@ -80,7 +80,7 @@ except (ImportError, ModuleNotFoundError):
     ):
         sys.modules[mod] = _ha
 
-from custom_components.eaux_marseille.api import ConsumptionData, EauxDeMarseilleClient
+from custom_components.eau_seine_bievre.api import ConsumptionData, EauxDeMarseilleClient
 
 MOCK_USERNAME = "user@example.com"
 MOCK_PASSWORD = "s3cret"
@@ -154,7 +154,7 @@ if HAS_HA:
     from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
     from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-    from custom_components.eaux_marseille.const import (
+    from custom_components.eau_seine_bievre.const import (
         CONF_CONTRACT_ID,
         CONF_PROVIDER,
         DOMAIN,

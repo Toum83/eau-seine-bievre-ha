@@ -14,11 +14,11 @@ from homeassistant.const import CONF_PASSWORD
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType, InvalidData
 
-from custom_components.eaux_marseille.api import (
+from custom_components.eau_seine_bievre.api import (
     EauxDeMarseilleApiError,
     EauxDeMarseilleAuthError,
 )
-from custom_components.eaux_marseille.const import CONF_PROVIDER, DOMAIN
+from custom_components.eau_seine_bievre.const import CONF_PROVIDER, DOMAIN
 
 from .conftest import MOCK_CONFIG_ENTRY_DATA, MOCK_CONSUMPTION, MOCK_CONTRACT_ID
 
@@ -41,19 +41,19 @@ def _full_client_mock(mock_client: MagicMock):
     """
     return [
         patch(
-            "custom_components.eaux_marseille.config_flow.EauxDeMarseilleClient",
+            "custom_components.eau_seine_bievre.config_flow.EauxDeMarseilleClient",
             return_value=mock_client,
         ),
         patch(
-            "custom_components.eaux_marseille._client_factory.EauxDeMarseilleClient",
+            "custom_components.eau_seine_bievre._client_factory.EauxDeMarseilleClient",
             return_value=mock_client,
         ),
         patch(
-            "custom_components.eaux_marseille.coordinator.EauxDeMarseilleCoordinator._async_update_data",
+            "custom_components.eau_seine_bievre.coordinator.EauxDeMarseilleCoordinator._async_update_data",
             return_value=MOCK_CONSUMPTION,
         ),
         patch(
-            "custom_components.eaux_marseille.async_import_historical_statistics",
+            "custom_components.eau_seine_bievre.async_import_historical_statistics",
         ),
     ]
 
@@ -84,7 +84,7 @@ async def test_user_flow_invalid_auth(hass: HomeAssistant, mock_client: MagicMoc
     mock_client.authenticate.side_effect = EauxDeMarseilleAuthError("Bad creds")
 
     with patch(
-        "custom_components.eaux_marseille.config_flow.EauxDeMarseilleClient",
+        "custom_components.eau_seine_bievre.config_flow.EauxDeMarseilleClient",
         return_value=mock_client,
     ):
         result = await hass.config_entries.flow.async_init(
@@ -103,7 +103,7 @@ async def test_user_flow_cannot_connect(hass: HomeAssistant, mock_client: MagicM
     mock_client.authenticate.side_effect = Exception("Network error")
 
     with patch(
-        "custom_components.eaux_marseille.config_flow.EauxDeMarseilleClient",
+        "custom_components.eau_seine_bievre.config_flow.EauxDeMarseilleClient",
         return_value=mock_client,
     ):
         result = await hass.config_entries.flow.async_init(
@@ -122,7 +122,7 @@ async def test_user_flow_duplicate(
 ) -> None:
     """Test config flow aborts on duplicate contract."""
     with patch(
-        "custom_components.eaux_marseille.config_flow.EauxDeMarseilleClient",
+        "custom_components.eau_seine_bievre.config_flow.EauxDeMarseilleClient",
         return_value=mock_client,
     ):
         result = await hass.config_entries.flow.async_init(
@@ -169,7 +169,7 @@ async def test_reauth_flow_invalid_auth(
     mock_client.authenticate.side_effect = EauxDeMarseilleAuthError("still bad")
 
     with patch(
-        "custom_components.eaux_marseille.config_flow.EauxDeMarseilleClient",
+        "custom_components.eau_seine_bievre.config_flow.EauxDeMarseilleClient",
         return_value=mock_client,
     ):
         result = await mock_config_entry.start_reauth_flow(hass)
@@ -189,7 +189,7 @@ async def test_reauth_flow_cannot_connect(
     mock_client.authenticate.side_effect = EauxDeMarseilleApiError("portal down")
 
     with patch(
-        "custom_components.eaux_marseille.config_flow.EauxDeMarseilleClient",
+        "custom_components.eau_seine_bievre.config_flow.EauxDeMarseilleClient",
         return_value=mock_client,
     ):
         result = await mock_config_entry.start_reauth_flow(hass)

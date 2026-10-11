@@ -18,7 +18,7 @@ from typing import Any
 
 import pytest
 
-_ROOT = Path(__file__).parent.parent / "custom_components" / "eaux_marseille"
+_ROOT = Path(__file__).parent.parent / "custom_components" / "eau_seine_bievre"
 _STRINGS = _ROOT / "strings.json"
 _TRANSLATIONS = _ROOT / "translations"
 

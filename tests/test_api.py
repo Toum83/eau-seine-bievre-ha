@@ -16,7 +16,7 @@ import pytest
 from aiohttp.client_reqrep import ConnectionKey
 from aioresponses import aioresponses
 
-from custom_components.eaux_marseille.api import (
+from custom_components.eau_seine_bievre.api import (
     ConsumptionData,
     EauxDeMarseilleApiError,
     EauxDeMarseilleAuthError,
@@ -24,9 +24,9 @@ from custom_components.eaux_marseille.api import (
     EauxDeMarseilleNoDataError,
     EauxDeMarseilleSessionExpiredError,
 )
-from custom_components.eaux_marseille.const import MOBILE_ENDPOINTS, PROVIDERS, Provider
-from custom_components.eaux_marseille.diagnostics import _scrub_exception
-from custom_components.eaux_marseille.models import encode_context_cookie
+from custom_components.eau_seine_bievre.const import MOBILE_ENDPOINTS, PROVIDERS, Provider
+from custom_components.eau_seine_bievre.diagnostics import _scrub_exception
+from custom_components.eau_seine_bievre.models import encode_context_cookie
 
 # The default provider used by EauxDeMarseilleClient when constructed
 # without an explicit ``provider`` kwarg. Tests target SEM since that's

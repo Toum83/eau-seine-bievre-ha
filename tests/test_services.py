@@ -11,8 +11,8 @@ import pytest
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ServiceValidationError
 
-from custom_components.eaux_marseille.const import DOMAIN
-from custom_components.eaux_marseille.services import (
+from custom_components.eau_seine_bievre.const import DOMAIN
+from custom_components.eau_seine_bievre.services import (
     ATTR_CONFIG_ENTRY,
     SERVICE_REFRESH,
     SERVICE_REIMPORT_STATISTICS,
@@ -28,15 +28,15 @@ async def _setup_loaded_entry(hass: HomeAssistant, mock_client: MagicMock, entry
     """Bring the integration up to ``LOADED`` for the given mock entry."""
     with (
         patch(
-            "custom_components.eaux_marseille._client_factory.EauxDeMarseilleClient",
+            "custom_components.eau_seine_bievre._client_factory.EauxDeMarseilleClient",
             return_value=mock_client,
         ),
         patch(
-            "custom_components.eaux_marseille.coordinator.EauxDeMarseilleCoordinator._async_update_data",
+            "custom_components.eau_seine_bievre.coordinator.EauxDeMarseilleCoordinator._async_update_data",
             return_value=MOCK_CONSUMPTION,
         ),
         patch(
-            "custom_components.eaux_marseille.async_import_historical_statistics",
+            "custom_components.eau_seine_bievre.async_import_historical_statistics",
         ),
     ):
         await hass.config_entries.async_setup(entry.entry_id)
@@ -89,11 +89,11 @@ async def test_reimport_runs_historical_import(
     fresh_client.close = AsyncMock()
     with (
         patch(
-            "custom_components.eaux_marseille._client_factory.EauxDeMarseilleClient",
+            "custom_components.eau_seine_bievre._client_factory.EauxDeMarseilleClient",
             return_value=fresh_client,
         ),
         patch(
-            "custom_components.eaux_marseille.services.async_import_historical_statistics",
+            "custom_components.eau_seine_bievre.services.async_import_historical_statistics",
             new=AsyncMock(),
         ) as mock_import,
     ):

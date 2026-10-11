@@ -1,10 +1,10 @@
 # A minimal PEP 621 table. This project is a Home Assistant custom
 # component, not a pip-installable package — the real version and runtime
-# requirements live in custom_components/eaux_marseille/manifest.json.
+# requirements live in custom_components/eau_seine_bievre/manifest.json.
 # This block exists so `deptry` has a declared-dependency source to check
 # imports against; keep `dependencies` in sync with the manifest.
 [project]
-name = "eaux-marseille-ha"
+name = "eau-seine-bievre-ha"
 dynamic = ["version"]
 requires-python = ">=3.13"
 dependencies = ["tenacity>=8.0"]
@@ -63,13 +63,13 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"custom_components/eaux_marseille/_http.py" = [
+"custom_components/eau_seine_bievre/_http.py" = [
     # The `timeout` parameter here is an `aiohttp.ClientTimeout` config
     # object passed to `session.request()`, not a numeric deadline. Ruff's
     # ASYNC109 suggestion to use `asyncio.timeout()` does not apply.
     "ASYNC109",
 ]
-"custom_components/eaux_marseille/_auth.py" = [
+"custom_components/eau_seine_bievre/_auth.py" = [
     # Same reason as _http.py: timeout is a ClientTimeout config object.
     "ASYNC109",
 ]
@@ -86,7 +86,7 @@ ignore = [
 max-complexity = 10
 
 [tool.ruff.lint.isort]
-known-first-party = ["custom_components.eaux_marseille"]
+known-first-party = ["custom_components.eau_seine_bievre"]
 combine-as-imports = true
 
 [tool.ruff.format]
@@ -133,39 +133,39 @@ disable_error_code = ["no-untyped-def", "type-arg", "no-untyped-call"]
 # ---------------------------------------------------------------------
 
 [tool.importlinter]
-root_package = "custom_components.eaux_marseille"
+root_package = "custom_components.eau_seine_bievre"
 
 [[tool.importlinter.contracts]]
 name = "Auth/transport stack stays layered (api -> _auth -> _http -> _redirects)"
 type = "layers"
 layers = [
-    "custom_components.eaux_marseille.api",
-    "custom_components.eaux_marseille._auth",
-    "custom_components.eaux_marseille._http",
-    "custom_components.eaux_marseille._redirects",
+    "custom_components.eau_seine_bievre.api",
+    "custom_components.eau_seine_bievre._auth",
+    "custom_components.eau_seine_bievre._http",
+    "custom_components.eau_seine_bievre._redirects",
 ]
 
 [[tool.importlinter.contracts]]
 name = "Leaf modules (const/exceptions/models) have no intra-package imports"
 type = "forbidden"
 source_modules = [
-    "custom_components.eaux_marseille.const",
-    "custom_components.eaux_marseille.exceptions",
-    "custom_components.eaux_marseille.models",
+    "custom_components.eau_seine_bievre.const",
+    "custom_components.eau_seine_bievre.exceptions",
+    "custom_components.eau_seine_bievre.models",
 ]
 forbidden_modules = [
-    "custom_components.eaux_marseille.api",
-    "custom_components.eaux_marseille._auth",
-    "custom_components.eaux_marseille._mobile",
-    "custom_components.eaux_marseille._http",
-    "custom_components.eaux_marseille._redirects",
-    "custom_components.eaux_marseille._client_factory",
-    "custom_components.eaux_marseille.coordinator",
-    "custom_components.eaux_marseille.config_flow",
-    "custom_components.eaux_marseille.sensor",
-    "custom_components.eaux_marseille.statistics",
-    "custom_components.eaux_marseille.diagnostics",
-    "custom_components.eaux_marseille.services",
+    "custom_components.eau_seine_bievre.api",
+    "custom_components.eau_seine_bievre._auth",
+    "custom_components.eau_seine_bievre._mobile",
+    "custom_components.eau_seine_bievre._http",
+    "custom_components.eau_seine_bievre._redirects",
+    "custom_components.eau_seine_bievre._client_factory",
+    "custom_components.eau_seine_bievre.coordinator",
+    "custom_components.eau_seine_bievre.config_flow",
+    "custom_components.eau_seine_bievre.sensor",
+    "custom_components.eau_seine_bievre.statistics",
+    "custom_components.eau_seine_bievre.diagnostics",
+    "custom_components.eau_seine_bievre.services",
 ]
 
 # ---------------------------------------------------------------------
@@ -189,7 +189,7 @@ DEP003 = ["homeassistant", "aiohttp", "yarl", "voluptuous"]
 # ---------------------------------------------------------------------
 
 [tool.vulture]
-paths = ["custom_components/eaux_marseille"]
+paths = ["custom_components/eau_seine_bievre"]
 # Home Assistant framework hooks: called by HA (config-entry lifecycle,
 # config-flow steps, the coordinator update method, the sensor platform
 # entry point, entity attributes/properties), not by our own code, so they

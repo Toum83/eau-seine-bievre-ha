@@ -52,11 +52,11 @@ L'intégration récupère votre consommation d'eau depuis le portail choisi tout
 | `sensor.eaux_de_marseille_<contrat>_date_du_releve_precedent` | Date du relevé précédent | — |
 | `sensor.eaux_de_marseille_<contrat>_nombre_de_releves` | Nombre total de relevés disponibles | — |
 
-Une **statistique externe mensuelle** est également importée sous l'identifiant `eaux_marseille:monthly_consumption_<contrat>` — utilisable dans les cartes `statistics-graph` et le tableau de bord Énergie.
+Une **statistique externe mensuelle** est également importée sous l'identifiant `eau_seine_bievre:monthly_consumption_<contrat>` — utilisable dans les cartes `statistics-graph` et le tableau de bord Énergie.
 
-La **consommation journalière** est également disponible : une **statistique externe journalière** sous `eaux_marseille:daily_consumption_<contrat>` et un index compteur précis mis à jour au jour le jour (à J-1 en général). Elle provient du graphe `JOURNEE` du portail web sur les contrats qui l'exposent (compteurs communicants), et — pour les contrats que le portail web garde en mensuel (**SEM, SEMM et Vivaigo**) — elle est récupérée automatiquement depuis le backend de l'application mobile du fournisseur. Dans les deux cas, aucune configuration supplémentaire n'est nécessaire ; les contrats sans aucune source journalière conservent le comportement mensuel.
+La **consommation journalière** est également disponible : une **statistique externe journalière** sous `eau_seine_bievre:daily_consumption_<contrat>` et un index compteur précis mis à jour au jour le jour (à J-1 en général). Elle provient du graphe `JOURNEE` du portail web sur les contrats qui l'exposent (compteurs communicants), et — pour les contrats que le portail web garde en mensuel (**SEM, SEMM et Vivaigo**) — elle est récupérée automatiquement depuis le backend de l'application mobile du fournisseur. Dans les deux cas, aucune configuration supplémentaire n'est nécessaire ; les contrats sans aucune source journalière conservent le comportement mensuel.
 
-> **Statistiques externes vs entités.** Les identifiants `eaux_marseille:…` ci-dessus (avec le `:`) sont des *statistiques externes*, pas des entités. Elles apparaissent dans les sélecteurs de **statistiques** — la source d'eau du tableau de bord Énergie et la carte `statistics-graph` — mais **pas** dans le sélecteur d'*entités* classique proposé à l'ajout de la plupart des cartes, ni dans l'onglet Historique. Pour les afficher depuis l'interface, utilisez une carte `statistics-graph` (son sélecteur liste les statistiques) ou collez l'identifiant en YAML. Si une carte demande une *entité*, utilisez plutôt une des lignes `sensor.…` — en particulier `…_index_compteur_precis`, un capteur d'eau `total_increasing` qui fait aussi directement office de source d'eau pour le tableau de bord Énergie.
+> **Statistiques externes vs entités.** Les identifiants `eau_seine_bievre:…` ci-dessus (avec le `:`) sont des *statistiques externes*, pas des entités. Elles apparaissent dans les sélecteurs de **statistiques** — la source d'eau du tableau de bord Énergie et la carte `statistics-graph` — mais **pas** dans le sélecteur d'*entités* classique proposé à l'ajout de la plupart des cartes, ni dans l'onglet Historique. Pour les afficher depuis l'interface, utilisez une carte `statistics-graph` (son sélecteur liste les statistiques) ou collez l'identifiant en YAML. Si une carte demande une *entité*, utilisez plutôt une des lignes `sensor.…` — en particulier `…_index_compteur_precis`, un capteur d'eau `total_increasing` qui fait aussi directement office de source d'eau pour le tableau de bord Énergie.
 
 ## Cas d'usage
 
@@ -66,7 +66,7 @@ L'usage le plus courant. Une fois l'intégration configurée :
 
 1. Allez dans **Paramètres → Tableaux de bord → Énergie**
 2. Ajoutez une **Source d'eau** dans le bloc Consommation d'eau
-3. Choisissez la statistique importée `eaux_marseille:monthly_consumption_<contrat>`
+3. Choisissez la statistique importée `eau_seine_bievre:monthly_consumption_<contrat>`
 4. Vous pouvez optionnellement renseigner un prix au m³ pour suivre le coût
 
 Vous obtiendrez l'historique mensuel (depuis 2024) et le mois en cours en temps réel, côte à côte avec l'électricité et le gaz si vous les suivez aussi.
@@ -117,7 +117,7 @@ Ajoutez une carte `statistics-graph` sur un dashboard :
 type: statistics-graph
 title: Consommation d'eau (mensuelle)
 entities:
-  - eaux_marseille:monthly_consumption_<contrat>
+  - eau_seine_bievre:monthly_consumption_<contrat>
 period: month
 stat_types:
   - sum
@@ -146,7 +146,7 @@ Eaux de Marseille est dans le dépôt HACS par défaut, aucun dépôt personnali
 ### Installation manuelle
 
 1. Téléchargez la dernière version depuis la [page des releases](https://github.com/EnO33/eaux-marseille-ha/releases)
-2. Copiez le dossier `custom_components/eaux_marseille` dans le répertoire `config/custom_components/` de votre Home Assistant
+2. Copiez le dossier `custom_components/eau_seine_bievre` dans le répertoire `config/custom_components/` de votre Home Assistant
 3. **Redémarrez Home Assistant**
 4. Continuez avec la [Configuration](#configuration)
 
@@ -200,12 +200,12 @@ Vous pouvez ajouter l'intégration plusieurs fois, une fois par contrat. Chaque 
 
 L'intégration expose deux actions personnalisées appelables depuis des automatisations ou **Outils de développement → Actions**.
 
-### `eaux_marseille.refresh`
+### `eau_seine_bievre.refresh`
 
 Déclenche un poll immédiat du portail client pour le contrat sélectionné, sans attendre le prochain cycle d'une heure.
 
 ```yaml
-action: eaux_marseille.refresh
+action: eau_seine_bievre.refresh
 data:
   config_entry: <à choisir dans le menu déroulant>
 ```
@@ -214,12 +214,12 @@ Utile pour :
 - Rafraîchir manuellement après une coupure réseau
 - Brancher l'intégration sur une automatisation qui tourne au moment du télérelevé
 
-### `eaux_marseille.reimport_statistics`
+### `eau_seine_bievre.reimport_statistics`
 
 Relance l'import historique des statistiques mensuelles. Par défaut, l'intégration n'importe que les nouveaux mois à chaque redémarrage — ce service force un re-fetch complet depuis janvier 2024.
 
 ```yaml
-action: eaux_marseille.reimport_statistics
+action: eau_seine_bievre.reimport_statistics
 data:
   config_entry: <à choisir dans le menu déroulant>
 ```
@@ -233,8 +233,8 @@ Utile pour :
 1. Dans Home Assistant, allez dans **Paramètres → Appareils et services**
 2. Trouvez la carte de l'intégration **Eaux de Marseille**
 3. Cliquez sur le **menu ⋮ → Supprimer**
-4. (Optionnel) Pour également supprimer les statistiques historiques importées, allez dans **Outils de développement → Statistiques** et supprimez les entrées correspondant à `eaux_marseille:monthly_consumption_*`
-5. (Optionnel, installation manuelle uniquement) Supprimez le dossier `custom_components/eaux_marseille`
+4. (Optionnel) Pour également supprimer les statistiques historiques importées, allez dans **Outils de développement → Statistiques** et supprimez les entrées correspondant à `eau_seine_bievre:monthly_consumption_*`
+5. (Optionnel, installation manuelle uniquement) Supprimez le dossier `custom_components/eau_seine_bievre`
 
 ## Dépannage
 
@@ -246,12 +246,12 @@ Activez les logs au niveau info en ajoutant à votre `configuration.yaml` :
 logger:
   default: warning
   logs:
-    custom_components.eaux_marseille: info
+    custom_components.eau_seine_bievre: info
 ```
 
 Redémarrez Home Assistant, retentez l'ajout, puis consultez `home-assistant.log` pour les lignes `Authentication: step X/Y`. L'étape qui échoue indique s'il s'agit d'un problème réseau, d'identifiants ou côté portail.
 
-Si **aucune** ligne `Authentication` n'apparaît, c'est que l'intégration n'est pas chargée — généralement un cache HACS. Vérifiez la version dans `/config/custom_components/eaux_marseille/manifest.json` correspond bien à la dernière release.
+Si **aucune** ligne `Authentication` n'apparaît, c'est que l'intégration n'est pas chargée — généralement un cache HACS. Vérifiez la version dans `/config/custom_components/eau_seine_bievre/manifest.json` correspond bien à la dernière release.
 
 ### Les capteurs affichent « indisponible »
 
@@ -265,7 +265,7 @@ Vérifiez la carte de l'intégration pour le message d'erreur. Causes courantes 
 Merci d'inclure :
 - La version de Home Assistant
 - La version de l'intégration (depuis `manifest.json`)
-- Les lignes de log pertinentes (avec `custom_components.eaux_marseille: debug`)
+- Les lignes de log pertinentes (avec `custom_components.eau_seine_bievre: debug`)
 - Si l'erreur survient à l'ajout ou en fonctionnement normal
 
 [Ouvrir une issue →](https://github.com/EnO33/eaux-marseille-ha/issues)
@@ -330,7 +330,7 @@ Récap rapide :
 1. Ouvrez une issue avant tout changement non trivial
 2. Installez la stack de test complète : `pip install -r requirements_test.txt`
 3. Lancez `python -m pytest tests/` et vérifiez les 49 tests passent (aucun skip)
-4. Lancez `python -m ruff check`, `python -m ruff format --check`, `python -m mypy custom_components/eaux_marseille/`
+4. Lancez `python -m ruff check`, `python -m ruff format --check`, `python -m mypy custom_components/eau_seine_bievre/`
 
 ## Licence
 

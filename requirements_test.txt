@@ -6,7 +6,7 @@
 pytest-homeassistant-custom-component>=0.13.339
 aioresponses>=0.7.9
 
-# Runtime dependencies declared in custom_components/eaux_marseille/manifest.json.
+# Runtime dependencies declared in custom_components/eau_seine_bievre/manifest.json.
 # Mirrored here so the CI test environment has them available without
 # pulling them in via Home Assistant's full manifest install.
 tenacity>=9.1.4

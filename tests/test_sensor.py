@@ -22,15 +22,15 @@ async def test_sensors_created(
     """All expected sensors are created on setup."""
     with (
         patch(
-            "custom_components.eaux_marseille._client_factory.EauxDeMarseilleClient",
+            "custom_components.eau_seine_bievre._client_factory.EauxDeMarseilleClient",
             return_value=mock_client,
         ),
         patch(
-            "custom_components.eaux_marseille.coordinator.EauxDeMarseilleCoordinator._async_update_data",
+            "custom_components.eau_seine_bievre.coordinator.EauxDeMarseilleCoordinator._async_update_data",
             return_value=MOCK_CONSUMPTION,
         ),
         patch(
-            "custom_components.eaux_marseille.async_import_historical_statistics",
+            "custom_components.eau_seine_bievre.async_import_historical_statistics",
         ),
     ):
         await hass.config_entries.async_setup(mock_config_entry.entry_id)
@@ -65,15 +65,15 @@ async def test_sensor_values(
     """Sensor states reflect the consumption data."""
     with (
         patch(
-            "custom_components.eaux_marseille._client_factory.EauxDeMarseilleClient",
+            "custom_components.eau_seine_bievre._client_factory.EauxDeMarseilleClient",
             return_value=mock_client,
         ),
         patch(
-            "custom_components.eaux_marseille.coordinator.EauxDeMarseilleCoordinator._async_update_data",
+            "custom_components.eau_seine_bievre.coordinator.EauxDeMarseilleCoordinator._async_update_data",
             return_value=MOCK_CONSUMPTION,
         ),
         patch(
-            "custom_components.eaux_marseille.async_import_historical_statistics",
+            "custom_components.eau_seine_bievre.async_import_historical_statistics",
         ),
     ):
         await hass.config_entries.async_setup(mock_config_entry.entry_id)

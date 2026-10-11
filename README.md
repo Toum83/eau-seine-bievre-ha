@@ -52,11 +52,11 @@ It pulls your water consumption from the chosen portal every hour and exposes it
 | `sensor.eaux_de_marseille_<contract>_date_du_releve_precedent` | Previous reading date | — |
 | `sensor.eaux_de_marseille_<contract>_nombre_de_releves` | Total available readings | — |
 
-A **monthly external statistic** is also imported under the ID `eaux_marseille:monthly_consumption_<contract>` — usable in `statistics-graph` cards and the Energy dashboard.
+A **monthly external statistic** is also imported under the ID `eau_seine_bievre:monthly_consumption_<contract>` — usable in `statistics-graph` cards and the Energy dashboard.
 
-**Daily consumption** is available too — a **daily external statistic** under `eaux_marseille:daily_consumption_<contract>`, plus a precise meter index updated day by day (typically to yesterday). It comes from the web portal's `JOURNEE` chart on contracts that expose it (communicating meters), and — for contracts the web portal keeps monthly-only (**SEM, SEMM and Vivaigo**) — it is sourced automatically from the provider's mobile-app backend instead. Either way it needs no extra setup; contracts with no daily source at all keep the monthly-only behaviour.
+**Daily consumption** is available too — a **daily external statistic** under `eau_seine_bievre:daily_consumption_<contract>`, plus a precise meter index updated day by day (typically to yesterday). It comes from the web portal's `JOURNEE` chart on contracts that expose it (communicating meters), and — for contracts the web portal keeps monthly-only (**SEM, SEMM and Vivaigo**) — it is sourced automatically from the provider's mobile-app backend instead. Either way it needs no extra setup; contracts with no daily source at all keep the monthly-only behaviour.
 
-> **External statistics vs. entities.** The `eaux_marseille:…` IDs above (note the colon) are *external statistics*, not entities. They appear in **statistic** pickers — the Energy dashboard's water source and the `statistics-graph` card — but **not** in the generic *entity* picker you get when adding most cards, and not in the History tab. To chart them from the UI, use a `statistics-graph` card (its picker lists statistics) or paste the ID in YAML. If a card asks for an *entity*, use one of the `sensor.…` rows instead — in particular `…_index_compteur_precis`, a `total_increasing` water sensor that also works directly as an Energy water source.
+> **External statistics vs. entities.** The `eau_seine_bievre:…` IDs above (note the colon) are *external statistics*, not entities. They appear in **statistic** pickers — the Energy dashboard's water source and the `statistics-graph` card — but **not** in the generic *entity* picker you get when adding most cards, and not in the History tab. To chart them from the UI, use a `statistics-graph` card (its picker lists statistics) or paste the ID in YAML. If a card asks for an *entity*, use one of the `sensor.…` rows instead — in particular `…_index_compteur_precis`, a `total_increasing` water sensor that also works directly as an Energy water source.
 
 ## Use cases
 
@@ -66,7 +66,7 @@ The most common setup. Once the integration is configured:
 
 1. Go to **Settings → Dashboards → Energy**
 2. Add a **Water source** in the Water consumption block
-3. Pick the imported statistic `eaux_marseille:monthly_consumption_<contract>`
+3. Pick the imported statistic `eau_seine_bievre:monthly_consumption_<contract>`
 4. Optionally set a price per m³ to track cost alongside consumption
 
 You'll get monthly consumption history (back to 2024) plus the live current month, side-by-side with electricity and gas if you also track them.
@@ -117,7 +117,7 @@ Drop a `statistics-graph` card on a dashboard:
 type: statistics-graph
 title: Water consumption (monthly)
 entities:
-  - eaux_marseille:monthly_consumption_<contract>
+  - eau_seine_bievre:monthly_consumption_<contract>
 period: month
 stat_types:
   - sum
@@ -146,7 +146,7 @@ Eaux de Marseille is in the default HACS store, so no custom repository is neede
 ### Manual installation
 
 1. Download the latest release from the [releases page](https://github.com/EnO33/eaux-marseille-ha/releases)
-2. Copy the `custom_components/eaux_marseille` folder into your Home Assistant `config/custom_components/` directory
+2. Copy the `custom_components/eau_seine_bievre` folder into your Home Assistant `config/custom_components/` directory
 3. **Restart Home Assistant**
 4. Continue to [Configuration](#configuration)
 
@@ -200,12 +200,12 @@ You can add the integration multiple times, once per contract. Each contract bec
 
 The integration exposes two custom actions you can call from automations or **Developer tools → Actions**.
 
-### `eaux_marseille.refresh`
+### `eau_seine_bievre.refresh`
 
 Trigger an immediate poll of the customer portal for the selected contract, instead of waiting for the next 1-hour cycle.
 
 ```yaml
-action: eaux_marseille.refresh
+action: eau_seine_bievre.refresh
 data:
   config_entry: <pick from the dropdown>
 ```
@@ -214,12 +214,12 @@ Useful for:
 - Manual refresh after fixing a network outage
 - Hooking the integration into an automation that runs at meter-read time
 
-### `eaux_marseille.reimport_statistics`
+### `eau_seine_bievre.reimport_statistics`
 
 Re-run the historical monthly statistics import. By default the integration only imports new months on each restart — this service forces a full re-fetch from January 2024 onward.
 
 ```yaml
-action: eaux_marseille.reimport_statistics
+action: eau_seine_bievre.reimport_statistics
 data:
   config_entry: <pick from the dropdown>
 ```
@@ -233,8 +233,8 @@ Useful for:
 1. In Home Assistant, go to **Settings → Devices & Services**
 2. Find the **Eaux de Marseille** integration card
 3. Click the **⋮ menu → Delete**
-4. (Optional) To also remove the imported historical statistics, go to **Developer tools → Statistics** and delete entries matching `eaux_marseille:monthly_consumption_*`
-5. (Optional, manual install only) Remove the `custom_components/eaux_marseille` folder
+4. (Optional) To also remove the imported historical statistics, go to **Developer tools → Statistics** and delete entries matching `eau_seine_bievre:monthly_consumption_*`
+5. (Optional, manual install only) Remove the `custom_components/eau_seine_bievre` folder
 
 ## Troubleshooting
 
@@ -246,12 +246,12 @@ Enable info-level logs by adding to your `configuration.yaml`:
 logger:
   default: warning
   logs:
-    custom_components.eaux_marseille: info
+    custom_components.eau_seine_bievre: info
 ```
 
 Restart Home Assistant, retry the setup, then check `home-assistant.log` for `Authentication: step X/Y` lines. The step at which the failure occurs tells you whether it's a network, credentials, or portal-side issue.
 
-If you see no `Authentication` lines at all, the integration isn't being loaded — usually a HACS cache issue. Verify the version in `/config/custom_components/eaux_marseille/manifest.json` matches the latest release.
+If you see no `Authentication` lines at all, the integration isn't being loaded — usually a HACS cache issue. Verify the version in `/config/custom_components/eau_seine_bievre/manifest.json` matches the latest release.
 
 ### Sensors show "unavailable"
 
@@ -265,7 +265,7 @@ Check the integration card for an error message. Common causes:
 Please include:
 - Home Assistant version
 - Integration version (from `manifest.json`)
-- Relevant log lines (with `custom_components.eaux_marseille: debug`)
+- Relevant log lines (with `custom_components.eau_seine_bievre: debug`)
 - Whether the issue happens at setup or during regular operation
 
 [Open an issue →](https://github.com/EnO33/eaux-marseille-ha/issues)
@@ -330,7 +330,7 @@ Quick checklist:
 1. Open an issue first for non-trivial changes
 2. Install the full test stack: `pip install -r requirements_test.txt`
 3. Run `python -m pytest tests/` and confirm all 49 tests pass (no skips)
-4. Run `python -m ruff check`, `python -m ruff format --check`, `python -m mypy custom_components/eaux_marseille/`
+4. Run `python -m ruff check`, `python -m ruff format --check`, `python -m mypy custom_components/eau_seine_bievre/`
 
 ## License
 

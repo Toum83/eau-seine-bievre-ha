@@ -12,8 +12,8 @@ import pytest
 from homeassistant.components.recorder.models import StatisticMeanType
 from homeassistant.core import HomeAssistant
 
-from custom_components.eaux_marseille.const import DOMAIN
-from custom_components.eaux_marseille.statistics import async_import_historical_statistics
+from custom_components.eau_seine_bievre.const import DOMAIN
+from custom_components.eau_seine_bievre.statistics import async_import_historical_statistics
 
 from .conftest import MOCK_CONTRACT_ID, MOCK_MONTHLY_ENTRIES
 
@@ -31,7 +31,7 @@ def mock_recorder(hass: HomeAssistant):
     instance.async_add_executor_job = hass.async_add_executor_job
 
     with patch(
-        "custom_components.eaux_marseille.statistics.get_instance",
+        "custom_components.eau_seine_bievre.statistics.get_instance",
         return_value=instance,
     ):
         yield instance
@@ -41,7 +41,7 @@ def mock_recorder(hass: HomeAssistant):
 def mock_add_external_stats():
     """Mock async_add_external_statistics."""
     with patch(
-        "custom_components.eaux_marseille.statistics.async_add_external_statistics",
+        "custom_components.eau_seine_bievre.statistics.async_add_external_statistics",
     ) as mock:
         yield mock
 

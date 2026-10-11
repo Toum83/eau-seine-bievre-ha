@@ -2,9 +2,9 @@
 
 Two user-callable actions, registered once at integration load time:
 
-* ``eaux_marseille.refresh`` — request an immediate coordinator poll for
+* ``eau_seine_bievre.refresh`` — request an immediate coordinator poll for
   a given config entry, instead of waiting for the next 1-hour cycle.
-* ``eaux_marseille.reimport_statistics`` — re-run the historical monthly
+* ``eau_seine_bievre.reimport_statistics`` — re-run the historical monthly
   statistics import for a given config entry. Useful after a failed
   import (a HA repair issue is raised in that case, see ``statistics``).
 

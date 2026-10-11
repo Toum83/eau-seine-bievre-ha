@@ -4,7 +4,7 @@ refresh:
       required: true
       selector:
         config_entry:
-          integration: eaux_marseille
+          integration: eau_seine_bievre
 
 reimport_statistics:
   fields:
@@ -12,4 +12,4 @@ reimport_statistics:
       required: true
       selector:
         config_entry:
-          integration: eaux_marseille
+          integration: eau_seine_bievre

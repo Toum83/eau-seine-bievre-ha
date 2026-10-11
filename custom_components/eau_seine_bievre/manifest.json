@@ -1,0 +1,24 @@
+{
+  "domain": "eau_seine_bievre",
+  "name": "Eau Seine & Bièvre",
+  "after_dependencies": [
+    "recorder"
+  ],
+  "codeowners": [
+    "@Toum83",
+    "@EnO33"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/Toum83/eau-seine-bievre-ha",
+  "integration_type": "hub",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/Toum83/eau-seine-bievre-ha/issues",
+  "loggers": [
+    "custom_components.eau_seine_bievre"
+  ],
+  "quality_scale": "gold",
+  "requirements": [
+    "tenacity>=8.0"
+  ],
+  "version": "1.19.0+gosb.1"
+}

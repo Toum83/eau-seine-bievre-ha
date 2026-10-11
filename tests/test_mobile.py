@@ -11,13 +11,13 @@ import aiohttp
 import pytest
 from aioresponses import aioresponses
 
-from custom_components.eaux_marseille._mobile import MobileClient
-from custom_components.eaux_marseille.const import (
+from custom_components.eau_seine_bievre._mobile import MobileClient
+from custom_components.eau_seine_bievre.const import (
     MOBILE_ENDPOINTS,
     REQUEST_TIMEOUT_S,
     Provider,
 )
-from custom_components.eaux_marseille.exceptions import (
+from custom_components.eau_seine_bievre.exceptions import (
     EauxDeMarseilleApiError,
     EauxDeMarseilleAuthError,
 )

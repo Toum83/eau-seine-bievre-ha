@@ -8,7 +8,7 @@ from pathlib import Path
 # Pure module: loaded directly so the test doesn't need Home Assistant.
 _spec = importlib.util.spec_from_file_location(
     "app_bundle",
-    Path(__file__).parent.parent / "custom_components" / "eaux_marseille" / "_app_bundle.py",
+    Path(__file__).parent.parent / "custom_components" / "eau_seine_bievre" / "_app_bundle.py",
 )
 assert _spec and _spec.loader
 _mod = importlib.util.module_from_spec(_spec)

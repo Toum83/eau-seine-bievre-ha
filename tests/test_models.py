@@ -6,7 +6,7 @@ without any HTTP mocking or a Home Assistant install.
 
 from __future__ import annotations
 
-from custom_components.eaux_marseille.models import ConsumptionData
+from custom_components.eau_seine_bievre.models import ConsumptionData
 
 
 def test_last_reading_backfilled_from_history_when_dashboard_incomplete() -> None:

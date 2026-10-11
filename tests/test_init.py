@@ -14,7 +14,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.util import dt as dt_util
 from pytest_homeassistant_custom_component.common import async_fire_time_changed
 
-from custom_components.eaux_marseille import EauxDeMarseilleData
+from custom_components.eau_seine_bievre import EauxDeMarseilleData
 
 from .conftest import MOCK_CONSUMPTION
 
@@ -25,15 +25,15 @@ async def test_setup_entry(hass: HomeAssistant, mock_client: MagicMock, mock_con
     """Integration sets up correctly from a config entry."""
     with (
         patch(
-            "custom_components.eaux_marseille._client_factory.EauxDeMarseilleClient",
+            "custom_components.eau_seine_bievre._client_factory.EauxDeMarseilleClient",
             return_value=mock_client,
         ),
         patch(
-            "custom_components.eaux_marseille.coordinator.EauxDeMarseilleCoordinator._async_update_data",
+            "custom_components.eau_seine_bievre.coordinator.EauxDeMarseilleCoordinator._async_update_data",
             return_value=MOCK_CONSUMPTION,
         ),
         patch(
-            "custom_components.eaux_marseille.async_import_historical_statistics",
+            "custom_components.eau_seine_bievre.async_import_historical_statistics",
         ),
     ):
         result = await hass.config_entries.async_setup(mock_config_entry.entry_id)
@@ -49,15 +49,15 @@ async def test_unload_entry(hass: HomeAssistant, mock_client: MagicMock, mock_co
     """Integration unloads correctly."""
     with (
         patch(
-            "custom_components.eaux_marseille._client_factory.EauxDeMarseilleClient",
+            "custom_components.eau_seine_bievre._client_factory.EauxDeMarseilleClient",
             return_value=mock_client,
         ),
         patch(
-            "custom_components.eaux_marseille.coordinator.EauxDeMarseilleCoordinator._async_update_data",
+            "custom_components.eau_seine_bievre.coordinator.EauxDeMarseilleCoordinator._async_update_data",
             return_value=MOCK_CONSUMPTION,
         ),
         patch(
-            "custom_components.eaux_marseille.async_import_historical_statistics",
+            "custom_components.eau_seine_bievre.async_import_historical_statistics",
         ),
     ):
         await hass.config_entries.async_setup(mock_config_entry.entry_id)
@@ -82,15 +82,15 @@ async def test_statistics_reimported_daily(
     mock_import = AsyncMock()
     with (
         patch(
-            "custom_components.eaux_marseille._client_factory.EauxDeMarseilleClient",
+            "custom_components.eau_seine_bievre._client_factory.EauxDeMarseilleClient",
             return_value=mock_client,
         ),
         patch(
-            "custom_components.eaux_marseille.coordinator.EauxDeMarseilleCoordinator._async_update_data",
+            "custom_components.eau_seine_bievre.coordinator.EauxDeMarseilleCoordinator._async_update_data",
             return_value=MOCK_CONSUMPTION,
         ),
         patch(
-            "custom_components.eaux_marseille.async_import_historical_statistics",
+            "custom_components.eau_seine_bievre.async_import_historical_statistics",
             new=mock_import,
         ),
     ):
@@ -124,15 +124,15 @@ async def test_statistics_reimported_on_new_data(
     mock_import = AsyncMock()
     with (
         patch(
-            "custom_components.eaux_marseille._client_factory.EauxDeMarseilleClient",
+            "custom_components.eau_seine_bievre._client_factory.EauxDeMarseilleClient",
             return_value=mock_client,
         ),
         patch(
-            "custom_components.eaux_marseille.coordinator.EauxDeMarseilleCoordinator._async_update_data",
+            "custom_components.eau_seine_bievre.coordinator.EauxDeMarseilleCoordinator._async_update_data",
             return_value=MOCK_CONSUMPTION,
         ),
         patch(
-            "custom_components.eaux_marseille.async_import_historical_statistics",
+            "custom_components.eau_seine_bievre.async_import_historical_statistics",
             new=mock_import,
         ),
     ):
@@ -161,15 +161,15 @@ async def test_daily_reimport_timer_cancelled_on_unload(
     mock_import = AsyncMock()
     with (
         patch(
-            "custom_components.eaux_marseille._client_factory.EauxDeMarseilleClient",
+            "custom_components.eau_seine_bievre._client_factory.EauxDeMarseilleClient",
             return_value=mock_client,
         ),
         patch(
-            "custom_components.eaux_marseille.coordinator.EauxDeMarseilleCoordinator._async_update_data",
+            "custom_components.eau_seine_bievre.coordinator.EauxDeMarseilleCoordinator._async_update_data",
             return_value=MOCK_CONSUMPTION,
         ),
         patch(
-            "custom_components.eaux_marseille.async_import_historical_statistics",
+            "custom_components.eau_seine_bievre.async_import_historical_statistics",
             new=mock_import,
         ),
     ):

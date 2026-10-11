@@ -2,7 +2,7 @@
   "config": {
     "step": {
       "user": {
-        "title": "Eaux de Marseille",
+        "title": "Eau Seine & Bièvre",
         "description": "Enter your customer portal credentials.",
         "data": {
           "provider": "Water utility",
@@ -11,18 +11,18 @@
           "contract_id": "Contract number"
         },
         "data_description": {
-          "provider": "Pick the utility whose customer portal you log in to: SEM for espaceclients.eauxdemarseille.fr (Ventabren, Bandol, Vitrolles, Trets and other peripheral communes), SEMM for espaceclients.eaudemarseille-metropole.fr (Marseille proper, La Ciotat, Cassis, Marignane and surroundings), or Vivaigo for espaceclients.vivaigo.fr (Salon, Berre, Lambesc, Eyguières and the Salon-Berre area)."
+          "provider": "Pick the utility whose customer portal you log in to: SEM for espaceclients.eauxdemarseille.fr (Ventabren, Bandol, Vitrolles, Trets and other peripheral communes), SEMM for espaceclients.eaudemarseille-metropole.fr (Marseille proper, La Ciotat, Cassis, Marignane and surroundings), or Vivaigo for espaceclients.vivaigo.fr (Salon, Berre, Lambesc, Eyguières and the Salon-Berre area). Eau Seine & Bièvre: ael.eauxseinebievreorge.fr (Grand-Orly Seine Bièvre)."
         }
       },
       "reauth_confirm": {
-        "title": "Re-authenticate Eaux de Marseille",
+        "title": "Re-authenticate Eau Seine & Bièvre",
         "description": "The credentials for {username} are no longer valid. Please enter the portal password again.",
         "data": {
           "password": "Password"
         }
       },
       "reconfigure": {
-        "title": "Reconfigure Eaux de Marseille",
+        "title": "Reconfigure Eau Seine & Bièvre",
         "description": "Update the email, password, contract number or utility for this entry. Sensor history and imported statistics are preserved.",
         "data": {
           "provider": "Water utility",
@@ -45,25 +45,51 @@
   },
   "entity": {
     "sensor": {
-      "current_month_m3": { "name": "Current month" },
-      "current_month_litres": { "name": "Current month (litres)" },
-      "current_year_m3": { "name": "Current year" },
-      "index_m3": { "name": "Meter index" },
-      "index_precise_m3": { "name": "Meter index (precise)" },
-      "daily_average_m3": { "name": "Daily average" },
-      "last_reading_m3": { "name": "Last reading" },
-      "last_reading_litres": { "name": "Last reading (litres)" },
-      "last_reading_date": { "name": "Last reading date" },
-      "last_reading_days": { "name": "Last reading period" },
-      "previous_reading_m3": { "name": "Previous reading" },
-      "previous_reading_date": { "name": "Previous reading date" },
-      "total_readings": { "name": "Total readings" }
+      "current_month_m3": {
+        "name": "Current month"
+      },
+      "current_month_litres": {
+        "name": "Current month (litres)"
+      },
+      "current_year_m3": {
+        "name": "Current year"
+      },
+      "index_m3": {
+        "name": "Meter index"
+      },
+      "index_precise_m3": {
+        "name": "Meter index (precise)"
+      },
+      "daily_average_m3": {
+        "name": "Daily average"
+      },
+      "last_reading_m3": {
+        "name": "Last reading"
+      },
+      "last_reading_litres": {
+        "name": "Last reading (litres)"
+      },
+      "last_reading_date": {
+        "name": "Last reading date"
+      },
+      "last_reading_days": {
+        "name": "Last reading period"
+      },
+      "previous_reading_m3": {
+        "name": "Previous reading"
+      },
+      "previous_reading_date": {
+        "name": "Previous reading date"
+      },
+      "total_readings": {
+        "name": "Total readings"
+      }
     }
   },
   "issues": {
     "statistics_import_failed": {
       "title": "Historical statistics import failed",
-      "description": "Eaux de Marseille could not import the historical monthly consumption for contract {contract_id}. The integration keeps polling normally and the issue will clear automatically on the next successful import. If the issue persists, check the Home Assistant logs for the underlying error and use the link below to open a bug report."
+      "description": "Eau Seine & Bièvre could not import the historical monthly consumption for contract {contract_id}. The integration keeps polling normally and the issue will clear automatically on the next successful import. If the issue persists, check the Home Assistant logs for the underlying error and use the link below to open a bug report."
     }
   },
   "exceptions": {
@@ -74,10 +100,10 @@
       "message": "Failed to fetch consumption data from the portal: {error}"
     },
     "service_unknown_entry": {
-      "message": "No Eaux de Marseille entry with id {entry_id} is configured."
+      "message": "No Eau Seine & Bièvre entry with id {entry_id} is configured."
     },
     "service_entry_not_loaded": {
-      "message": "The Eaux de Marseille entry {entry_id} is not loaded (state: {state})."
+      "message": "The Eau Seine & Bièvre entry {entry_id} is not loaded (state: {state})."
     }
   },
   "services": {
@@ -87,7 +113,7 @@
       "fields": {
         "config_entry": {
           "name": "Configuration entry",
-          "description": "The Eaux de Marseille configuration entry to refresh."
+          "description": "The Eau Seine & Bièvre configuration entry to refresh."
         }
       }
     },
@@ -97,7 +123,7 @@
       "fields": {
         "config_entry": {
           "name": "Configuration entry",
-          "description": "The Eaux de Marseille configuration entry whose statistics should be re-imported."
+          "description": "The Eau Seine & Bièvre configuration entry whose statistics should be re-imported."
         }
       }
     }

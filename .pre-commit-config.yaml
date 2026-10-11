@@ -19,7 +19,7 @@ repos:
     rev: v1.13.0
     hooks:
       - id: mypy
-        files: ^custom_components/eaux_marseille/
+        files: ^custom_components/eau_seine_bievre/
         # Mypy needs the same dependency surface CI installs in order to
         # type-check our HA-flavoured code.
         additional_dependencies:

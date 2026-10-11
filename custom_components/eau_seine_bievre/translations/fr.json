@@ -2,7 +2,7 @@
   "config": {
     "step": {
       "user": {
-        "title": "Eaux de Marseille",
+        "title": "Eau Seine & Bièvre",
         "description": "Entrez vos identifiants du portail client.",
         "data": {
           "provider": "Fournisseur d'eau",
@@ -11,18 +11,18 @@
           "contract_id": "Numéro de contrat"
         },
         "data_description": {
-          "provider": "Choisissez le fournisseur dont vous utilisez le portail client : SEM pour espaceclients.eauxdemarseille.fr (Ventabren, Bandol, Vitrolles, Trets et autres communes périphériques), SEMM pour espaceclients.eaudemarseille-metropole.fr (Marseille même, La Ciotat, Cassis, Marignane et alentour), ou Vivaigo pour espaceclients.vivaigo.fr (Salon, Berre, Lambesc, Eyguières et le pays salonais/berrois)."
+          "provider": "Choisissez le fournisseur dont vous utilisez le portail client : SEM pour espaceclients.eauxdemarseille.fr (Ventabren, Bandol, Vitrolles, Trets et autres communes périphériques), SEMM pour espaceclients.eaudemarseille-metropole.fr (Marseille même, La Ciotat, Cassis, Marignane et alentour), ou Vivaigo pour espaceclients.vivaigo.fr (Salon, Berre, Lambesc, Eyguières et le pays salonais/berrois). Eau Seine & Bièvre : ael.eauxseinebievreorge.fr (Grand-Orly Seine Bièvre)."
         }
       },
       "reauth_confirm": {
-        "title": "Réauthentification Eaux de Marseille",
+        "title": "Réauthentification Eau Seine & Bièvre",
         "description": "Les identifiants pour {username} ne sont plus valides. Veuillez saisir à nouveau le mot de passe du portail.",
         "data": {
           "password": "Mot de passe"
         }
       },
       "reconfigure": {
-        "title": "Reconfigurer Eaux de Marseille",
+        "title": "Reconfigurer Eau Seine & Bièvre",
         "description": "Modifiez l'e-mail, le mot de passe, le numéro de contrat ou le fournisseur de cette entrée. L'historique des capteurs et les statistiques importées sont préservés.",
         "data": {
           "provider": "Fournisseur d'eau",
@@ -45,25 +45,51 @@
   },
   "entity": {
     "sensor": {
-      "current_month_m3": { "name": "Mois en cours" },
-      "current_month_litres": { "name": "Mois en cours (litres)" },
-      "current_year_m3": { "name": "Année en cours" },
-      "index_m3": { "name": "Index compteur" },
-      "index_precise_m3": { "name": "Index compteur (précis)" },
-      "daily_average_m3": { "name": "Moyenne journalière" },
-      "last_reading_m3": { "name": "Dernier relevé" },
-      "last_reading_litres": { "name": "Dernier relevé (litres)" },
-      "last_reading_date": { "name": "Date du dernier relevé" },
-      "last_reading_days": { "name": "Durée de la période" },
-      "previous_reading_m3": { "name": "Relevé précédent" },
-      "previous_reading_date": { "name": "Date du relevé précédent" },
-      "total_readings": { "name": "Nombre de relevés" }
+      "current_month_m3": {
+        "name": "Mois en cours"
+      },
+      "current_month_litres": {
+        "name": "Mois en cours (litres)"
+      },
+      "current_year_m3": {
+        "name": "Année en cours"
+      },
+      "index_m3": {
+        "name": "Index compteur"
+      },
+      "index_precise_m3": {
+        "name": "Index compteur (précis)"
+      },
+      "daily_average_m3": {
+        "name": "Moyenne journalière"
+      },
+      "last_reading_m3": {
+        "name": "Dernier relevé"
+      },
+      "last_reading_litres": {
+        "name": "Dernier relevé (litres)"
+      },
+      "last_reading_date": {
+        "name": "Date du dernier relevé"
+      },
+      "last_reading_days": {
+        "name": "Durée de la période"
+      },
+      "previous_reading_m3": {
+        "name": "Relevé précédent"
+      },
+      "previous_reading_date": {
+        "name": "Date du relevé précédent"
+      },
+      "total_readings": {
+        "name": "Nombre de relevés"
+      }
     }
   },
   "issues": {
     "statistics_import_failed": {
       "title": "Échec de l'import des statistiques historiques",
-      "description": "Eaux de Marseille n'a pas pu importer la consommation mensuelle historique pour le contrat {contract_id}. L'intégration continue de fonctionner normalement et le problème disparaîtra automatiquement au prochain import réussi. Si le problème persiste, consultez les logs Home Assistant pour l'erreur sous-jacente et utilisez le lien ci-dessous pour ouvrir un ticket."
+      "description": "Eau Seine & Bièvre n'a pas pu importer la consommation mensuelle historique pour le contrat {contract_id}. L'intégration continue de fonctionner normalement et le problème disparaîtra automatiquement au prochain import réussi. Si le problème persiste, consultez les logs Home Assistant pour l'erreur sous-jacente et utilisez le lien ci-dessous pour ouvrir un ticket."
     }
   },
   "exceptions": {
@@ -74,10 +100,10 @@
       "message": "Impossible de récupérer les données de consommation depuis le portail : {error}"
     },
     "service_unknown_entry": {
-      "message": "Aucune entrée Eaux de Marseille avec l'identifiant {entry_id}."
+      "message": "Aucune entrée Eau Seine & Bièvre avec l'identifiant {entry_id}."
     },
     "service_entry_not_loaded": {
-      "message": "L'entrée Eaux de Marseille {entry_id} n'est pas chargée (état : {state})."
+      "message": "L'entrée Eau Seine & Bièvre {entry_id} n'est pas chargée (état : {state})."
     }
   },
   "services": {
@@ -87,7 +113,7 @@
       "fields": {
         "config_entry": {
           "name": "Entrée de configuration",
-          "description": "L'entrée de configuration Eaux de Marseille à rafraîchir."
+          "description": "L'entrée de configuration Eau Seine & Bièvre à rafraîchir."
         }
       }
     },
@@ -97,7 +123,7 @@
       "fields": {
         "config_entry": {
           "name": "Entrée de configuration",
-          "description": "L'entrée de configuration Eaux de Marseille dont les statistiques doivent être ré-importées."
+          "description": "L'entrée de configuration Eau Seine & Bièvre dont les statistiques doivent être ré-importées."
         }
       }
     }

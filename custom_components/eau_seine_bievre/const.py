@@ -14,7 +14,7 @@ from enum import StrEnum
 # Home Assistant integration metadata
 # ---------------------------------------------------------------------
 
-DOMAIN = "eaux_marseille"
+DOMAIN = "eau_seine_bievre"
 
 CONF_CONTRACT_ID = "contract_id"
 CONF_PROVIDER = "provider"
@@ -149,7 +149,8 @@ PROVIDER_MANUFACTURER: dict[Provider, str] = {
     Provider.GOSB: "Eau Seine & Bièvre",
 }
 
-DEFAULT_PROVIDER = Provider.SEM
+# Copie Toum83 : Eau Seine & Bièvre par défaut.
+DEFAULT_PROVIDER = Provider.GOSB
 
 # ---------------------------------------------------------------------
 # HTTP behaviour

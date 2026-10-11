@@ -5,7 +5,7 @@ Thanks for considering a contribution. This guide covers the bits that are not o
 ## Before opening a PR
 
 - For non-trivial changes, **open an issue first** so we can agree on the approach. Saves work for everyone.
-- The integration declares **Gold** quality scale. Any change should keep all existing quality-scale rules satisfied (`custom_components/eaux_marseille/quality_scale.yaml`).
+- The integration declares **Gold** quality scale. Any change should keep all existing quality-scale rules satisfied (`custom_components/eau_seine_bievre/quality_scale.yaml`).
 - We don't accept PRs that mention "Claude", "GPT", "Copilot" or any AI tooling in the commit message, PR title or release notes. Tooling is a means; the contribution should stand on its own merits.
 
 ## Running tests locally
@@ -44,7 +44,7 @@ The CI runs five jobs and they all must pass before merge:
 |-----------------------------|----------------------------------------------------|
 | Ruff (lint)                 | `python -m ruff check custom_components/ tests/`   |
 | Ruff (format)               | `python -m ruff format custom_components/ tests/`  |
-| Mypy (strict)               | `python -m mypy custom_components/eaux_marseille/` |
+| Mypy (strict)               | `python -m mypy custom_components/eau_seine_bievre/` |
 | Pytest                      | `python -m pytest tests/` (with the full stack)    |
 | Hassfest + HACS validation  | only on CI (Docker-based)                          |
 
