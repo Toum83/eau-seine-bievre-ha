@@ -239,6 +239,21 @@ class PortalAuth:
             require_field="tokenAuthentique",
             error_prefix="Login failed",
         )
+        # Some SOMEI portals (Eau Seine & Bièvre) can require a second factor:
+        # the response then carries ``isMFA: true`` and ``tokenAuthentique`` is
+        # only good for ``Utilisateur/validationMFA`` (code sent by e-mail);
+        # every other call answers 401 "Le token de session a expiré".
+        _LOGGER.debug(
+            "Login response: keys=%s isMFA=%s expiration=%s",
+            sorted(data),
+            data.get("isMFA"),
+            data.get("expirationDate") or data.get("ExpirationDate"),
+        )
+        if data.get("isMFA") is True:
+            raise EauxDeMarseilleAuthError(
+                "Double authentification requise par le portail : un code a été envoyé "
+                "par e-mail (validation par code pas encore prise en charge)"
+            )
         ael_token: str = data["tokenAuthentique"]
         user_info: dict[str, Any] = data["utilisateurInfo"]
         self._ael_token = ael_token
