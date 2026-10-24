@@ -37,6 +37,9 @@ from .models import encode_context_cookie, encode_user_context_cookie
 
 _LOGGER = logging.getLogger(__name__)
 
+#: Essais de connexion en changeant de serveur derrière le répartiteur de charge.
+_MAX_NODE_ATTEMPTS = 12
+
 
 def conversation_id() -> str:
     """One-shot ``ConversationId`` header value."""
@@ -119,14 +122,30 @@ class PortalAuth:
 
     async def authenticate(self) -> None:
         """Run all 5 steps; ``self._ael_token`` holds the AEL session token."""
-        _LOGGER.info("Authentication: step 1/5 (acquiring session cookie)")
-        await self._step_landing()
+        for attempt in range(1, _MAX_NODE_ATTEMPTS + 1):
+            _LOGGER.info("Authentication: step 1/5 (acquiring session cookie)")
+            await self._step_landing()
 
-        _LOGGER.info("Authentication: step 2/5 (generating token)")
-        temp_token = await self._step_generate_token()
+            _LOGGER.info("Authentication: step 2/5 (generating token)")
+            temp_token = await self._step_generate_token()
 
-        _LOGGER.info("Authentication: step 3/5 (logging in user)")
-        ael_token, user_info = await self._step_login(temp_token)
+            _LOGGER.info("Authentication: step 3/5 (logging in user)")
+            try:
+                ael_token, user_info = await self._step_login(temp_token)
+                break
+            except EauxDeMarseilleAuthError as err:
+                # Eau Seine & Bièvre (octobre 2026) : un des serveurs derrière le répartiteur
+                # F5 répond « Session Inconnue » à toute connexion, même valide. Le cookie
+                # BIGipServer colle la session à ce serveur : on l'oublie et on recommence
+                # pour tomber sur un serveur sain, que l'on garde ensuite.
+                if "session inconnue" not in str(err).lower() or attempt == _MAX_NODE_ATTEMPTS:
+                    raise
+                _LOGGER.info(
+                    "Serveur du portail défaillant (« Session Inconnue »), nouvel essai %d/%d",
+                    attempt + 1,
+                    _MAX_NODE_ATTEMPTS,
+                )
+                self._session.cookie_jar.clear(lambda c: c.key.startswith("BIGipServer"))
 
         _LOGGER.info("Authentication: step 4/5 (fetching default contract)")
         contract = await self._step_default_contract()
