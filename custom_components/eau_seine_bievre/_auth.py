@@ -33,7 +33,6 @@ from .const import (
     headers_for,
 )
 from .exceptions import EauxDeMarseilleApiError, EauxDeMarseilleAuthError
-from .models import encode_context_cookie, encode_user_context_cookie
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -129,26 +128,30 @@ class PortalAuth:
             _LOGGER.info("Authentication: step 2/5 (generating token)")
             temp_token = await self._step_generate_token()
 
-            _LOGGER.info("Authentication: step 3/5 (logging in user)")
             try:
+                _LOGGER.info("Authentication: step 3/5 (logging in user)")
                 ael_token, user_info = await self._step_login(temp_token)
+                _LOGGER.info("Authentication: step 4/5 (fetching default contract)")
+                contract = await self._step_default_contract()
                 break
             except EauxDeMarseilleAuthError as err:
                 # Eau Seine & Bièvre (octobre 2026) : un des serveurs derrière le répartiteur
-                # F5 répond « Session Inconnue » à toute connexion, même valide. Le cookie
-                # BIGipServer colle la session à ce serveur : on l'oublie et on recommence
-                # pour tomber sur un serveur sain, que l'on garde ensuite.
-                if "session inconnue" not in str(err).lower() or attempt == _MAX_NODE_ATTEMPTS:
+                # F5 répond « Session Inconnue » à toute connexion, même valide, ou refuse le
+                # jeton juste émis (« Le token de session a expiré »). Le cookie BIGipServer
+                # colle la session à ce serveur : on vide les cookies et on recommence pour
+                # tomber sur un serveur sain, que l'on garde ensuite.
+                message = str(err).lower()
+                retriable = "session inconnue" in message or "token de session a expir" in message
+                if not retriable or attempt == _MAX_NODE_ATTEMPTS:
                     raise
                 _LOGGER.info(
-                    "Serveur du portail défaillant (« Session Inconnue »), nouvel essai %d/%d",
+                    "Serveur du portail défaillant (%s), nouvel essai %d/%d",
+                    "session inconnue" if "session inconnue" in message else "jeton refusé",
                     attempt + 1,
                     _MAX_NODE_ATTEMPTS,
                 )
-                self._session.cookie_jar.clear(lambda c: c.key.startswith("BIGipServer"))
-
-        _LOGGER.info("Authentication: step 4/5 (fetching default contract)")
-        contract = await self._step_default_contract()
+                self._ael_token = None
+                self._session.cookie_jar.clear()
 
         _LOGGER.info("Authentication: step 5/5 (setting context cookie)")
         self._step_set_context(contract, user_info, ael_token)
@@ -246,11 +249,8 @@ class PortalAuth:
             error_prefix="Token generation failed",
         )
         token: str = data["token"]
-        # Like the portal's JS (``tokenService.setToken``): the app token also
-        # goes into the ``aelToken`` cookie; the Eau Seine & Bièvre back end
-        # answers "Session inconnue" when the ``Token`` header has no matching
-        # cookie.
-        self._set_cookie("aelToken", token)
+        # Pas de cookie aelToken : « Session inconnue » venait d'un serveur défaillant derrière
+        # le répartiteur, pas d'un cookie manquant (voir authenticate).
         return token
 
     async def _step_login(
@@ -272,7 +272,7 @@ class PortalAuth:
         # the response then carries ``isMFA: true`` and ``tokenAuthentique`` is
         # only good for ``Utilisateur/validationMFA`` (code sent by e-mail);
         # every other call answers 401 "Le token de session a expiré".
-        _LOGGER.debug(
+        _LOGGER.info(
             "Login response: keys=%s isMFA=%s expiration=%s",
             sorted(data),
             data.get("isMFA"),
@@ -287,10 +287,9 @@ class PortalAuth:
         user_info: dict[str, Any] = data["utilisateurInfo"]
         self._ael_token = ael_token
         self._app_token = None
-        self._set_cookie("aelToken", ael_token)
-        # Same as the portal's JS (``setUser``): user context cookie before
-        # the first authenticated call; step 5 replaces it with the full one.
-        self._set_cookie("AEL_CONTEXT", encode_user_context_cookie(user_info, ael_token))
+        # Pas de cookie aelToken / AEL_CONTEXT : vérifié le 24/10/2026 dans le navigateur, le
+        # portail sert les données avec le seul en-tête ``Token`` (sans aucun cookie), et un
+        # cookie de contexte reconstruit à la main peut faire refuser la session.
         _LOGGER.debug(
             "Cookies before default contract: %s",
             sorted({c.key for c in self._session.cookie_jar}),
@@ -306,10 +305,8 @@ class PortalAuth:
         user_info: dict[str, Any],
         ael_token: str,
     ) -> None:
-        self._set_cookie(
-            "AEL_CONTEXT",
-            encode_context_cookie(contract, user_info, ael_token),
-        )
+        # Rien à poser (voir _step_login) : le contrat par défaut suffit à valider la session.
+        _LOGGER.debug("Default contract fetched: keys=%s", sorted(contract))
 
     # ------------------------------------------------------------------
     # Helpers (private)
