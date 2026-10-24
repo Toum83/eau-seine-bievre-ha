@@ -17,6 +17,7 @@ and bearer token are kept on the instance, so each step is a tiny method.
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import uuid
 from typing import Any
@@ -38,6 +39,9 @@ _LOGGER = logging.getLogger(__name__)
 
 #: Essais de connexion en changeant de serveur derrière le répartiteur de charge.
 _MAX_NODE_ATTEMPTS = 12
+#: Relectures du contrat juste après la connexion, avec une attente croissante (1 s, 2 s, 3 s…).
+_MAX_CONTRACT_ATTEMPTS = 4
+_CONTRACT_DELAY_S = 1.0
 
 
 def conversation_id() -> str:
@@ -297,7 +301,19 @@ class PortalAuth:
         return ael_token, user_info
 
     async def _step_default_contract(self) -> dict[str, Any]:
-        return await self._auth_call("GET", "/Abonnement/getContratParDefaut/")
+        # Juste après la connexion, le portail répond parfois « Le token de session a expiré »
+        # tant que la session n'est pas enregistrée (le navigateur met plusieurs centaines de ms
+        # entre les deux appels, l'intégration 60 ms). On attend un peu et on relit, sans se
+        # reconnecter. Cas réel du 24/10/2026 : 5 connexions réussies, 5 refus immédiats.
+        for attempt in range(1, _MAX_CONTRACT_ATTEMPTS + 1):
+            await asyncio.sleep(_CONTRACT_DELAY_S * attempt)
+            try:
+                return await self._auth_call("GET", "/Abonnement/getContratParDefaut/")
+            except EauxDeMarseilleAuthError as err:
+                if "token de session a expir" not in str(err).lower() or attempt == _MAX_CONTRACT_ATTEMPTS:
+                    raise
+                _LOGGER.info("Jeton pas encore reconnu, nouvelle lecture du contrat %d/%d", attempt + 1, _MAX_CONTRACT_ATTEMPTS)
+        raise AssertionError("unreachable")
 
     def _step_set_context(
         self,
