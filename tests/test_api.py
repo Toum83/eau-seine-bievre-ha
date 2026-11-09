@@ -68,6 +68,7 @@ async def client() -> EauxDeMarseilleClient:
         login="user@example.com",
         password="password",
         contract_id=CONTRACT_ID,
+        provider=Provider.SEM,
     )
     c._mobile = None
     yield c
@@ -455,6 +456,34 @@ class TestFetch:
         assert data.last_reading_days == 94
         assert data.total_readings == 10
         assert data.previous_reading_m3 == 18.0
+
+    async def test_empty_body_is_treated_as_no_data(
+        self, client: EauxDeMarseilleClient, mock_auth: aioresponses
+    ) -> None:
+        """A 200 with an empty body (no billed reading yet) does not crash fetch()."""
+        mock_auth.get(
+            f"{_API_BASE}/TableauDeBord/derniereConsommationFacturee/{CONTRACT_ID}",
+            body="",
+            content_type="",
+        )
+        mock_auth.get(
+            re.compile(r".*listeConsommationsInstanceAlerteChart.*/MOIS/true"),
+            payload={"consommations": []},
+        )
+        mock_auth.get(
+            re.compile(r".*listeConsommationsInstanceAlerteChart.*/JOURNEE/true"),
+            payload={"consommations": []},
+        )
+        mock_auth.get(
+            f"{_API_BASE}/Facturation/listeConsommationsFacturees/{CONTRACT_ID}",
+            payload={"resultats": []},
+        )
+
+        await client.authenticate()
+        data = await client.fetch()
+
+        assert data.last_reading_m3 is None
+        assert data.total_readings == 0
 
     async def test_api_error_on_failure(
         self, client: EauxDeMarseilleClient, mock_auth: aioresponses
@@ -977,6 +1006,25 @@ class TestClientLifecycle:
         """Client accepts a custom timeout."""
         c = EauxDeMarseilleClient("a", "b", "c", timeout=30)
         assert c._timeout.total == 30
+        await c.close()
+
+    async def test_cookies_sent_unquoted(self) -> None:
+        """Cookie values are sent verbatim, never wrapped in double quotes.
+
+        F5 BIG-IP persistence cookies (``BIGipServer…``) contain ``/`` and ``=``;
+        aiohttp's default jar would send them as ``name="value"``, which the
+        load balancer does not recognise, so every request lands on a random
+        backend that does not know the session token.
+        """
+        from yarl import URL
+
+        c = EauxDeMarseilleClient("a", "b", "c")
+        value = "!aRzs362ftCIEq3eyXHSFVmfYZkOHg4/7zzuWMFyVAaWiJo=="
+        c._session.cookie_jar.update_cookies(
+            {"BIGipServerpool": value}, response_url=URL(_PORTAL_URL)
+        )
+        sent = c._session.cookie_jar.filter_cookies(URL(f"{_API_BASE}/x"))
+        assert sent.output(header="", attrs=[]).strip() == f"BIGipServerpool={value}"
         await c.close()
 
     async def test_external_session_not_closed(self) -> None:

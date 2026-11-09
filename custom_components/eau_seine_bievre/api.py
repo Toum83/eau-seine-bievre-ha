@@ -88,7 +88,7 @@ class EauxDeMarseilleClient:
         # for IP literals; we only ever talk to the portal hostnames so the
         # stricter mode adds defence-in-depth at zero cost.
         self._session = session or aiohttp.ClientSession(
-            cookie_jar=aiohttp.CookieJar(),
+            cookie_jar=aiohttp.CookieJar(quote_cookie=False),
             timeout=self._timeout,
             connector=aiohttp.TCPConnector(resolver=aiohttp.ThreadedResolver()),
         )

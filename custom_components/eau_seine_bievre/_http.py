@@ -204,4 +204,6 @@ async def _parse_json_or_raise(
             f"content-type={content_type}, status={response.status}. "
             f"Body starts with: {body[:200]!r}"
         ) from err
-    return data
+    # Eau Seine & Bièvre : HTTP 200 au corps vide quand il n'y a rien (ex. pas de
+    # consommation facturée récente) ; ``response.json`` rend alors None.
+    return data if data is not None else {}
